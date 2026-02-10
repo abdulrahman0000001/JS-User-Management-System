@@ -1,8 +1,41 @@
-let users = [{}]
+let users = [
+    {},
+    {
+        name: "John Smith",
+        age: 28,
+        email: "john.smith@example.com",
+        specialty: "Software Engineering"
+    },
+    {
+        name: "Sarah Johnson",
+        age: 32,
+        email: "sarah.johnson@example.com",
+        specialty: "Data Science"
+    },
+    {
+        name: "Michael Chen",
+        age: 26,
+        email: "michael.chen@example.com",
+        specialty: "Web Development"
+    },
+    {
+        name: "Emily Davis",
+        age: 29,
+        email: "emily.davis@example.com",
+        specialty: "UI/UX Design"
+    },
+    {
+        name: "David Wilson",
+        age: 35,
+        email: "david.wilson@example.com",
+        specialty: "DevOps"
+    }
+]
 let manageMod = false
+
 //basic display and add
-function displayusers() {
-    let ul = document.getElementById("stu")
+function displayUsers() {
+    let ul = document.getElementById("usr")
     ul.innerHTML = `<h2>Users</h2>`
 
     for(let i = 1; i < users.length; i++) {
@@ -16,6 +49,7 @@ function displayusers() {
 
         ul.appendChild(li)
     }
+    updateSpecialties()
 }
 
 function addUser() {
@@ -31,6 +65,10 @@ function addUser() {
         alert("Age must be 18 and above")
         return
     }
+    else if(!isValidEmail(email)) {
+        alert("Please enter a valid email address")
+        return
+    }
 
 
     let user = {
@@ -41,10 +79,11 @@ function addUser() {
     }
     
     users.push(user)
+    updateSpecialties()
         
     clearInput()
     if(!manageMod) {
-        displayusers()
+        displayUsers()
     }
     else {
         displayAndManage()
@@ -52,6 +91,8 @@ function addUser() {
     
     
 }
+
+
 
 //editing mode
 function displayAndManage() {
@@ -72,7 +113,7 @@ function displayAndManage() {
 
 
     document.getElementById("manageBtn").disabled = true
-    let ul = document.getElementById("stu")
+    let ul = document.getElementById("usr")
     ul.innerHTML = `<h2>Users</h2>`
 
     for(let i = 1; i < users.length; i++) {
@@ -93,15 +134,22 @@ function deleteUser(index) {
     let userName = users[index].name
     if(confirm(`You are about to delete ${userName}`)) {
         users.splice(index, 1)
-        displayusers()
-        if(users.length == 1) alert("There is no users")
+        updateSpecialties()
+        if(!manageMod) {
+            displayUsers()
+        }
+        else {
+            displayAndManage()
+        }  
+        if(users.length == 1) alert("There is no users")     
     }
+    
 }
 
 function editUser(index) {
     document.getElementById("addBtn").disabled = true
-    let stu = getStuValues(index)
-    fillInput(stu.name, stu.age, stu.email, stu.specialty)
+    let usr = getUserValues(index)
+    fillInput(usr.name, usr.age, usr.email, usr.specialty)
     
     let existingBtn = document.getElementById("saveBtn")
     if(existingBtn) {
@@ -133,7 +181,7 @@ function editUser(index) {
 
 function saveUser(index) {
  
-    let stu2 = {
+    let usr2 = {
         name: document.getElementById("name").value,
         age: document.getElementById("age").value,
         email: document.getElementById("email").value,
@@ -141,13 +189,13 @@ function saveUser(index) {
     }
     users.splice(index, 1)
 
-    users.splice(index, 0, stu2)
+    users.splice(index, 0, usr2)
+    updateSpecialties()
     clearInput()
 
     displayAndManage()
     document.getElementById("addBtn").disabled = false
 }
-
 
 function closeManageMod() {
     clearInput()
@@ -165,42 +213,20 @@ function closeManageMod() {
     let closeBtn = document.getElementById("closeBtn")
     closeBtn.remove()
 
-    displayusers()
+    displayUsers()
 
     document.getElementById("manageBtn").disabled = false
     document.getElementById("addBtn").disabled = false
     manageMod = false
 }
 
-//simplify code
-function getStuValues(index) {
-    return {
-        name: users[index].name,
-        age: users[index].age,
-        email: users[index].email,
-        specialty: users[index].specialty
-    }
-}
-
-function clearInput() {
-    document.getElementById("name").value = ""
-    document.getElementById("age").value = ""
-    document.getElementById("email").value = ""
-    document.getElementById("specialty").value = ""
-}
-
-function fillInput(name, age, email, specialty) {
-    document.getElementById("name").value = name
-    document.getElementById("age").value = age
-    document.getElementById("email").value = email
-    document.getElementById("specialty").value = specialty
-}
 
 
-//search 
 
+
+//search and filter
 function searchUsers(value) {
-  let ul = document.getElementById("stu")
+  let ul = document.getElementById("usr")
   ul.innerHTML = `<h2>Users</h2>`
 
   let found = false
@@ -226,6 +252,95 @@ function searchUsers(value) {
   }
 
   if (value === "") {
-      displayusers()
+      displayUsers()
   }
 }
+
+function filterBySpecialty(specialty) {
+    let ul = document.getElementById("usr")
+    ul.innerHTML = `<h2>Users</h2>`
+    
+    if (specialty === "") {
+        displayUsers()
+        return
+    }
+    
+    let found = false
+    for (let i = 1; i < users.length; i++) {
+        if (users[i].specialty === specialty) {
+            found = true
+            let li = document.createElement("li")
+            li.innerHTML = `
+                ${users[i].name}
+                - ${users[i].age}
+                - ${users[i].email}
+                - ${users[i].specialty}
+            `
+            ul.appendChild(li)
+        }
+    }
+    
+    if (!found) {
+        ul.innerHTML += `<li>No users found</li>`
+    }
+}
+
+function getSpecialties() {
+    let specialties = []
+    for (let i = 1; i < users.length; i++) {
+        if (!specialties.includes(users[i].specialty) && users[i].specialty) {
+            specialties.push(users[i].specialty)
+        }
+    }
+    return specialties.sort()
+}
+
+function updateSpecialties() {
+    let select = document.getElementById("specialtyFilter")
+    
+    let currentValue = select.value
+    select.innerHTML = '<option value="">All Specialties</option>'
+    
+    let specialties = getSpecialties()
+    for (let i = 0; i < specialties.length; i++) {
+        let option = document.createElement("option")
+        option.value = specialties[i]
+        option.innerHTML = specialties[i]
+        select.appendChild(option)
+    }
+    
+    select.value = currentValue
+}
+
+
+
+
+//simplify code
+function getUserValues(index) {
+    return {
+        name: users[index].name,
+        age: users[index].age,
+        email: users[index].email,
+        specialty: users[index].specialty
+    }
+}
+
+function clearInput() {
+    document.getElementById("name").value = ""
+    document.getElementById("age").value = ""
+    document.getElementById("email").value = ""
+    document.getElementById("specialty").value = ""
+}
+
+function fillInput(name, age, email, specialty) {
+    document.getElementById("name").value = name
+    document.getElementById("age").value = age
+    document.getElementById("email").value = email
+    document.getElementById("specialty").value = specialty
+}
+
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+}
+
