@@ -195,3 +195,37 @@ function fillInput(name, age, email, specialty) {
     document.getElementById("email").value = email
     document.getElementById("specialty").value = specialty
 }
+
+
+//search 
+
+function searchUsers(value) {
+  let ul = document.getElementById("stu")
+  ul.innerHTML = `<h2>Users</h2>`
+
+  let found = false
+
+  for (let i = 1; i < users.length; i++) {
+
+      if (users[i].name.toLowerCase().includes(value.toLowerCase())) {
+          found = true
+
+          let li = document.createElement("li")
+          li.innerHTML = `
+              ${users[i].name}
+              - ${users[i].age}
+              - ${users[i].email}
+              - ${users[i].specialty}
+          `
+          ul.appendChild(li)
+      }
+  }
+
+  if (!found) {
+      ul.innerHTML += `<li>No users found</li>`
+  }
+
+  if (value === "") {
+      displayusers()
+  }
+}
