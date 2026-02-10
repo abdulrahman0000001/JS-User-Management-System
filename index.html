@@ -4,7 +4,6 @@
         <meta title="hello">
     </head>
     <body>
-        <script src="test.js"></script>
         <h2>User info</h2>
         <input value="user" id="name" type="text" placeholder="name" required>
         <input value="20" id="age" type="number" min="0" max="100" placeholder="age" required>
@@ -18,6 +17,17 @@
         
         <br><br>
         <ul id="stu">Users</ul>
+
+
+        <hr>
+
+        <!-- Search -->
+        <input type="text" placeholder="Search by name" onkeyup="searchUsers(this.value)">
+
+        <hr>
         
+
+        <script src="main.js"></script>
+
     </body>
 </html>
