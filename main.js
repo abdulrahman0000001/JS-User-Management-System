@@ -1,5 +1,22 @@
 let users = [{}]
 let manageMod = false
+//basic display and add
+function displayusers() {
+    let ul = document.getElementById("stu")
+    ul.innerHTML = `<h2>Users</h2>`
+
+    for(let i = 1; i < users.length; i++) {
+
+        let li = document.createElement("li")
+        li.innerHTML = 
+            `${users[i].name}
+            - ${users[i].age}
+            - ${users[i].email}
+            - ${users[i].specialty}`
+
+        ul.appendChild(li)
+    }
+}
 
 function addUser() {
     let name = document.getElementById("name").value
@@ -36,90 +53,7 @@ function addUser() {
     
 }
 
-function deleteUser(index) {
-    let userName = users[index].name
-    if(confirm(`You are about to delete ${userName}`)) {
-        users.splice(index, 1)
-        displayusers()
-        if(users.length == 1) alert("There is no users")
-    }
-}
-
-function editUser(index) {
-    document.getElementById("addBtn").disabled = true
-    let stu = getStuValues(index)
-    fillInput(stu.name, stu.age, stu.email, stu.specialty)
-    
-    let existingBtn = document.getElementById("saveBtn")
-    if(existingBtn) {
-        existingBtn.remove()
-    }
-    
-    let saveBtn = document.createElement("button")
-    saveBtn.innerHTML = "Save User"
-    saveBtn.id = "saveBtn"
-    saveBtn.onclick = function() {
-        saveStu(index)
-        document.getElementById("addBtn").disabled = false
-        saveBtn.remove()
-        cancelBtn.remove()
-    }
-    document.getElementById("buttons").appendChild(saveBtn)
-
-    let cancelBtn = document.createElement("button")
-    cancelBtn.innerHTML = "Cancel Edit"
-    cancelBtn.id = "cancelBtn"
-    cancelBtn.onclick = function() {
-        clearInput()
-        document.getElementById("addBtn").disabled = false
-        cancelBtn.remove()
-        saveBtn.remove()
-    }
-    document.getElementById("buttons").appendChild(cancelBtn)
-}
-
-
-function getStuValues(index) {
-    return {
-        name: users[index].name,
-        age: users[index].age,
-        email: users[index].email,
-        specialty: users[index].specialty
-    }
-}
-
-function clearInput() {
-    document.getElementById("name").value = ""
-    document.getElementById("age").value = ""
-    document.getElementById("email").value = ""
-    document.getElementById("specialty").value = ""
-}
-
-function fillInput(name, age, email, specialty) {
-    document.getElementById("name").value = name
-    document.getElementById("age").value = age
-    document.getElementById("email").value = email
-    document.getElementById("specialty").value = specialty
-}
-
-
-function displayusers() {
-    let ul = document.getElementById("stu")
-    ul.innerHTML = `<h2>Users</h2>`
-
-    for(let i = 1; i < users.length; i++) {
-
-        let li = document.createElement("li")
-        li.innerHTML = 
-            `${users[i].name}
-            - ${users[i].age}
-            - ${users[i].email}
-            - ${users[i].specialty}`
-
-        ul.appendChild(li)
-    }
-}
-
+//editing mode
 function displayAndManage() {
     manageMod = true
     let existingBtn = document.getElementById("closeBtn")
@@ -155,6 +89,66 @@ function displayAndManage() {
     }
 }
 
+function deleteUser(index) {
+    let userName = users[index].name
+    if(confirm(`You are about to delete ${userName}`)) {
+        users.splice(index, 1)
+        displayusers()
+        if(users.length == 1) alert("There is no users")
+    }
+}
+
+function editUser(index) {
+    document.getElementById("addBtn").disabled = true
+    let stu = getStuValues(index)
+    fillInput(stu.name, stu.age, stu.email, stu.specialty)
+    
+    let existingBtn = document.getElementById("saveBtn")
+    if(existingBtn) {
+        existingBtn.remove()
+    }
+    
+    let saveBtn = document.createElement("button")
+    saveBtn.innerHTML = "Save User"
+    saveBtn.id = "saveBtn"
+    saveBtn.onclick = function() {
+        saveUser(index)
+        document.getElementById("addBtn").disabled = false
+        saveBtn.remove()
+        cancelBtn.remove()
+    }
+    document.getElementById("buttons").appendChild(saveBtn)
+
+    let cancelBtn = document.createElement("button")
+    cancelBtn.innerHTML = "Cancel Edit"
+    cancelBtn.id = "cancelBtn"
+    cancelBtn.onclick = function() {
+        clearInput()
+        document.getElementById("addBtn").disabled = false
+        cancelBtn.remove()
+        saveBtn.remove()
+    }
+    document.getElementById("buttons").appendChild(cancelBtn)
+}
+
+function saveUser(index) {
+ 
+    let stu2 = {
+        name: document.getElementById("name").value,
+        age: document.getElementById("age").value,
+        email: document.getElementById("email").value,
+        specialty: document.getElementById("specialty").value
+    }
+    users.splice(index, 1)
+
+    users.splice(index, 0, stu2)
+    clearInput()
+
+    displayAndManage()
+    document.getElementById("addBtn").disabled = false
+}
+
+
 function closeManageMod() {
     clearInput()
     let existingBtn = document.getElementById("saveBtn")
@@ -178,23 +172,26 @@ function closeManageMod() {
     manageMod = false
 }
 
-
-
-
-
-function saveStu(index) {
- 
-    let stu2 = {
-        name: document.getElementById("name").value,
-        age: document.getElementById("age").value,
-        email: document.getElementById("email").value,
-        specialty: document.getElementById("specialty").value
+//simplify code
+function getStuValues(index) {
+    return {
+        name: users[index].name,
+        age: users[index].age,
+        email: users[index].email,
+        specialty: users[index].specialty
     }
-    users.splice(index, 1)
+}
 
-    users.splice(index, 0, stu2)
-    clearInput()
+function clearInput() {
+    document.getElementById("name").value = ""
+    document.getElementById("age").value = ""
+    document.getElementById("email").value = ""
+    document.getElementById("specialty").value = ""
+}
 
-    displayAndManage()
-    document.getElementById("addBtn").disabled = false
+function fillInput(name, age, email, specialty) {
+    document.getElementById("name").value = name
+    document.getElementById("age").value = age
+    document.getElementById("email").value = email
+    document.getElementById("specialty").value = specialty
 }
