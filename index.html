@@ -3,7 +3,8 @@
     <head>
         <meta title="hello">
     </head>
-    <body>
+    <body onload="displayUsers()">
+        
         <h2>User info</h2>
         <input value="user" id="name" type="text" placeholder="name" required>
         <input value="20" id="age" type="number" min="0" max="100" placeholder="age" required>
@@ -16,18 +17,20 @@
         </div>
         
         <br><br>
-        <ul id="stu">Users</ul>
+        <ul id="usr">Users</ul>
 
 
         <hr>
 
-        <!-- Search -->
+        <!-- Search and Filter -->
         <input type="text" placeholder="Search by name" onkeyup="searchUsers(this.value)">
-
+        <select id="specialtyFilter" onchange="filterBySpecialty(this.value)">
+            <option value="">All Specialties</option>
+        </select>
         <hr>
         
-
         <script src="main.js"></script>
+        
 
     </body>
 </html>
