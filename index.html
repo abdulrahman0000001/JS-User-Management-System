@@ -1,28 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-
-    <input type="text" id="name" placeholder="Name">
-    <input type="email" id="email" placeholder="Email">
-    <input type="number" id="age" placeholder="Age">
-    <input type="text" id="specialty" placeholder="Specialty">
-    <br>
-    <button onclick="addUser()">Add User</button>
-    <button onclick="editUser()">Edit User</button>
-    <button onclick="deleteUser()">delete User</button>
-
-    <br>
-    <ul id="list"></ul>
-
-    
-    
-    
-    <script src="main.js"></script>
-    
-</body>
+<html>
+    <head>
+        <meta title="hello">
+    </head>
+    <body>
+        <script src="test.js"></script>
+        <h2>User info</h2>
+        <input value="user" id="name" type="text" placeholder="name" required>
+        <input value="20" id="age" type="number" min="0" max="100" placeholder="age" required>
+        <input value="test@gmail.com" id="email" type="text" placeholder="email" required>
+        <input value="developer" id="specialty" type="text" placeholder="specialty" required>
+        <br> <br>
+        <div id="buttons">
+            <button id="addBtn" onclick="addUser()">Add User</button>
+            <button id="manageBtn" onclick="displayAndManage()">Manage Users</button>
+        </div>
+        
+        <br><br>
+        <ul id="stu">Users</ul>
+        
+    </body>
 </html>
