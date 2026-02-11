@@ -53,31 +53,11 @@ function displayUsers() {
 }
 
 function addUser() {
-  let name = document.getElementById("name").value
-  let age = document.getElementById("age").value
-  let email = document.getElementById("email").value
-  let specialty = document.getElementById("specialty").value
-  if(!name || !age || !email || !specialty) {
-    alert("Enter all inputs")
-    return
-  }
-  else if(age < 18) {
-    alert("Age must be 18 and above")
-    return
-  }
-  else if(!isValidEmail(email)) {
-    alert("Please enter a valid email address")
-    return
-  }
+  let user = getInputValues()
+  let isValid = validateInput(user)
+  if(!isValid) return
 
 
-  let user = {
-    name: name,
-    age: age,
-    email: email,
-    specialty: specialty
-  }
-  
   users.push(user)
   updateSpecialties()
     
@@ -96,6 +76,8 @@ function addUser() {
 
 //editing mode
 function displayAndManage() {
+  let ul = document.getElementById("usr")
+  ul.innerHTML = `<h2>Users</h2>`
   manageMod = true
   let existingBtn = document.getElementById("closeBtn")
   if(existingBtn) {
@@ -105,6 +87,7 @@ function displayAndManage() {
   let closeBtn = document.createElement("button")
   closeBtn.innerHTML = "Close manage mode"
   closeBtn.id = "closeBtn"
+  closeBtn.style.marginRight = "8px"
   closeBtn.onclick = function() {
     closeManageMod()
     
@@ -113,8 +96,7 @@ function displayAndManage() {
 
 
   document.getElementById("manageBtn").disabled = true
-  let ul = document.getElementById("usr")
-  ul.innerHTML = `<h2>Users</h2>`
+
 
   for(let i = 1; i < users.length; i++) {
 
@@ -124,7 +106,7 @@ function displayAndManage() {
       - ${users[i].age}
       - ${users[i].email}
       - ${users[i].specialty}
-      <button onclick="deleteUser(${i})">Delete User</button>
+      <button class="delete-btn" onclick="deleteUser(${i})">Delete User</button>
       <button onclick="editUser(${i})">Edit User</button>`
     ul.appendChild(li)
   }
@@ -152,49 +134,65 @@ function editUser(index) {
   fillInput(usr.name, usr.age, usr.email, usr.specialty)
   
   let existingBtn = document.getElementById("saveBtn")
-  if(existingBtn) {
-    existingBtn.remove()
+
+  if(!existingBtn) {
+    let saveBtn = document.createElement("button")
+    saveBtn.innerHTML = "Save User"
+    saveBtn.id = "saveBtn"
+    saveBtn.style.marginRight = "8px"
+    
+    saveBtn.onclick = function() {
+
+      let isCompleted = saveUser(index)
+      if(!isCompleted) return
+      
+      document.getElementById("addBtn").disabled = false
+      document.getElementById("saveBtn").remove()
+      document.getElementById("cancelBtn").remove()
+    }
+    document.getElementById("buttons").appendChild(saveBtn)
   }
   
-  let saveBtn = document.createElement("button")
-  saveBtn.innerHTML = "Save User"
-  saveBtn.id = "saveBtn"
-  saveBtn.onclick = function() {
-    saveUser(index)
-    document.getElementById("addBtn").disabled = false
-    saveBtn.remove()
-    cancelBtn.remove()
-  }
-  document.getElementById("buttons").appendChild(saveBtn)
+  
+  existingBtn = document.getElementById("cancelBtn")
 
-  let cancelBtn = document.createElement("button")
-  cancelBtn.innerHTML = "Cancel Edit"
-  cancelBtn.id = "cancelBtn"
+  if(!existingBtn) {
+    let cancelBtn = document.createElement("button")
+    cancelBtn.innerHTML = "Cancel Edit"
+    cancelBtn.style.marginRight = "8px"
+    cancelBtn.id = "cancelBtn"
+    document.getElementById("buttons").appendChild(cancelBtn)
+  }
+
+  let cancelBtn = document.getElementById("cancelBtn")
   cancelBtn.onclick = function() {
     clearInput()
     document.getElementById("addBtn").disabled = false
-    cancelBtn.remove()
-    saveBtn.remove()
+    document.getElementById("cancelBtn").remove()
+    document.getElementById("saveBtn").remove()
   }
-  document.getElementById("buttons").appendChild(cancelBtn)
+  
+  
 }
 
 function saveUser(index) {
- 
-  let usr2 = {
-    name: document.getElementById("name").value,
-    age: document.getElementById("age").value,
-    email: document.getElementById("email").value,
-    specialty: document.getElementById("specialty").value
+  let user = getInputValues()
+  let isValid = validateInput(user)
+  if(!isValid) {
+    return false
   }
+
   users.splice(index, 1)
 
-  users.splice(index, 0, usr2)
+  users.splice(index, 0, user)
+
   updateSpecialties()
   clearInput()
 
   displayAndManage()
   document.getElementById("addBtn").disabled = false
+  
+  return true
 }
 
 function closeManageMod() {
@@ -229,10 +227,15 @@ function searchEngine(value = "", specialty = "") {
   let ul = document.getElementById("usr")
   ul.innerHTML = `<h2>Users</h2>`
 
-  if (specialty === "" && value === "") {
-  displayUsers()
+  if (specialty === "" && value === "" && !manageMod) {
+    displayUsers()
   return
   }
+  else if(specialty === "" && value === "" && manageMod) {
+    displayAndManage()
+    return
+  }
+
   let found = false
 
   for (let i = 1; i < users.length; i++) {
@@ -242,13 +245,27 @@ function searchEngine(value = "", specialty = "") {
     found = true
 
     let li = document.createElement("li")
+    if(!manageMod) {
     li.innerHTML = `
+    ${users[i].name}
+    - ${users[i].age}
+    - ${users[i].email}
+    - ${users[i].specialty}
+    `
+      ul.appendChild(li)
+    }
+    else {
+      li.innerHTML = `
       ${users[i].name}
       - ${users[i].age}
       - ${users[i].email}
       - ${users[i].specialty}
+      <button class="delete-btn" onclick="deleteUser(${i})">Delete User</button>
+      <button onclick="editUser(${i})">Edit User</button>
     `
     ul.appendChild(li)
+    }
+
   }
   }
 
@@ -304,6 +321,35 @@ function getUserValues(index) {
     email: users[index].email,
     specialty: users[index].specialty
   }
+}
+function getInputValues() {
+  let user = {
+    name: document.getElementById("name").value,
+    age: document.getElementById("age").value,
+    email: document.getElementById("email").value,
+    specialty: document.getElementById("specialty").value
+  }
+  return user
+}
+function validateInput(user = {}) {
+  let isValid = true
+  if(!user.name || !user.age || !user.email || !user.specialty) {
+    alert("Enter all inputs")
+    isValid = false
+    return
+  }
+  else if(user.age < 18) {
+    alert("Age must be 18 and above")
+    isValid = false
+    return
+  }
+  else if(!isValidEmail(user.email)) {
+    alert("Please enter a valid email address")
+    isValid = false
+    return
+  }
+  return isValid
+  
 }
 
 function clearInput() {
