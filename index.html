@@ -1,36 +1,45 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta title="hello">
-    </head>
-    <body onload="displayUsers()">
-        
-        <h2>User info</h2>
-        <input value="user" id="name" type="text" placeholder="name" required>
-        <input value="20" id="age" type="number" min="0" max="100" placeholder="age" required>
-        <input value="test@gmail.com" id="email" type="text" placeholder="email" required>
-        <input value="developer" id="specialty" type="text" placeholder="specialty" required>
-        <br> <br>
-        <div id="buttons">
-            <button id="addBtn" onclick="addUser()">Add User</button>
-            <button id="manageBtn" onclick="displayAndManage()">Manage Users</button>
-        </div>
-        
-        <br><br>
-        <ul id="usr">Users</ul>
+  <head>
+    <meta title="hello">
+  </head>
+  <body onload="displayUsers()">
+    
+    <h2>User Managment System</h2>
+
+    <input value="user" id="name" type="text" placeholder="name" required>
+    <input value="20" id="age" type="number" min="0" max="100" placeholder="age" required>
+    <input value="test@gmail.com" id="email" type="text" placeholder="email" required>
+    <input value="developer" id="specialty" type="text" placeholder="specialty" required>
+
+    <br> <br>
+
+    <div id="buttons">
+      <button id="addBtn" onclick="addUser()">Add User</button>
+      <button id="manageBtn" onclick="displayAndManage()">Manage Users</button>
+    </div>
+    
+    <br><br>
+    <ul id="usr">Users</ul>
 
 
-        <hr>
+    <hr>
 
-        <!-- Search and Filter -->
-        <input type="text" placeholder="Search by name" onkeyup="searchUsers(this.value)">
-        <select id="specialtyFilter" onchange="filterBySpecialty(this.value)">
-            <option value="">All Specialties</option>
-        </select>
-        <hr>
-        
-        <script src="main.js"></script>
-        
-
-    </body>
+    <!-- Search and Filter -->
+    <input id="search" type="text" placeholder="Search by name" onkeyup="searchEngine(this.value, document.getElementById('specialtyFilter').value)" style="height:36px;padding:6px 10px;border:1px solid #ccc;border-radius:4px;font-size:14px;">
+    
+    <select id="specialtyFilter" onchange="searchEngine(document.getElementById('search').value, this.value)" style="height:36px;padding:6px 10px;border:1px solid #ccc;border-radius:4px;font-size:14px;margin-left:6px;">
+      <option value="">All Specialties</option>
+    </select>
+    
+    <button id="reloadBtn" onclick="searchEngine(document.getElementById('search').value, document.getElementById('specialtyFilter').value)" title="Reload" aria-label="Reload" type="button" style="width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-left:6px;border:1px solid #ccc;background:#fff;cursor:pointer;padding:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2-8.83"/></svg>
+    </button>
+    
+    <hr>
+    
+    
+    <script src="main.js"></script>
+    
+  </body>
 </html>
