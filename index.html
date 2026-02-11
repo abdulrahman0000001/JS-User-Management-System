@@ -1,45 +1,114 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta title="hello">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>User Management</title>
+    <style>
+      :root{--bg:#f7f8fb;--card:#ffffff;--primary:#3b82f6;--success:#10b981;--danger:#f87171;--secondary:#64748b;--close:#6366f1;--muted:#d1d5db}
+      html,body{height:100%}
+      body{
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        font-size:16px;
+        line-height:1.4;
+        color:#1f2937;
+        background:var(--bg);
+        padding:24px;
+        -webkit-font-smoothing:antialiased;
+      }
+      h2{font-size:1.5rem;margin:0 0 12px}
+      input[type="text"], input[type="number"], select{
+        height:44px;
+        padding:8px 12px;
+        border:1px solid #d1d5db;
+        border-radius:8px;
+        font-size:15px;
+        margin-right:8px;
+        box-sizing:border-box;
+        background:#fff;
+      }
+      #buttons{margin-top:10px}
+      button{
+        height:44px;
+        padding:0 14px;
+        border-radius:8px;
+        border:none;
+        font-size:15px;
+        font-weight:500;
+        cursor:pointer;
+        background:var(--primary);
+        color:#fff;
+        transition:all 0.2s ease;
+      }
+      button:hover{filter:brightness(0.9)}
+      button:active{transform:scale(0.98)}
+      button#addBtn{background:var(--primary)}
+      button#manageBtn{background:var(--primary)}
+      button:disabled{background:var(--muted);cursor:not-allowed;color:#6c757d}
+      button#addBtn{background:var(--success)}
+      button#addBtn:hover{filter:brightness(0.92)}
+      button#manageBtn{background:var(--primary)}
+      button#addBtn:disabled, button#manageBtn:disabled{background:var(--muted);color:#6c757d}
+      button#closeBtn{background:var(--close)}
+      button.delete-btn{background:var(--danger)}
+      button#saveBtn{background:var(--success)}
+      button#cancelBtn{background:var(--secondary)}
+      li button{height:28px;padding:0 8px;font-size:12px;margin-right:6px;margin-top:4px}
+      input#search{height:32px;padding:6px 12px;border:1px solid var(--muted);border-radius:999px;font-size:13px;background:var(--card);width:48%;max-width:360px}
+      select#specialtyFilter{height:32px;padding:6px 10px;border:1px solid var(--muted);border-radius:8px;font-size:13px;margin-left:8px;background:var(--card)}
+      button#reloadBtn{width:36px;height:36px;border-radius:8px;padding:0;background:var(--card);color:var(--primary);border:1px solid var(--muted);margin-left:8px;display:inline-flex;align-items:center;justify-content:center}
+      button#reloadBtn svg{stroke:var(--primary);width:18px;height:18px}
+      #usr{
+        list-style:none;
+        margin-top:16px;
+        padding:12px;
+        background:var(--card);
+        border-radius:8px;
+        box-shadow:0 1px 4px rgba(16,24,40,0.05);
+        max-width:900px;
+      }
+      input#search{width:60%;max-width:420px}
+      select#specialtyFilter{min-width:180px}
+      @media (max-width:600px){
+        input[type="text"], input[type="number"], select{width:100%;margin:6px 0}
+        #buttons{display:flex;flex-direction:column}
+        button{width:100%;margin:6px 0}
+      }
+    </style>
   </head>
   <body onload="displayUsers()">
     
     <h2>User Managment System</h2>
-
     <input value="user" id="name" type="text" placeholder="name" required>
     <input value="20" id="age" type="number" min="0" max="100" placeholder="age" required>
     <input value="test@gmail.com" id="email" type="text" placeholder="email" required>
     <input value="developer" id="specialty" type="text" placeholder="specialty" required>
-
     <br> <br>
-
     <div id="buttons">
       <button id="addBtn" onclick="addUser()">Add User</button>
       <button id="manageBtn" onclick="displayAndManage()">Manage Users</button>
     </div>
     
-    <br><br>
-    <ul id="usr">Users</ul>
+    <br>
+    
 
 
     <hr>
 
     <!-- Search and Filter -->
-    <input id="search" type="text" placeholder="Search by name" onkeyup="searchEngine(this.value, document.getElementById('specialtyFilter').value)" style="height:36px;padding:6px 10px;border:1px solid #ccc;border-radius:4px;font-size:14px;">
-    
-    <select id="specialtyFilter" onchange="searchEngine(document.getElementById('search').value, this.value)" style="height:36px;padding:6px 10px;border:1px solid #ccc;border-radius:4px;font-size:14px;margin-left:6px;">
+    <input id="search" type="text" placeholder="Search by name" onkeyup="searchEngine(this.value, document.getElementById('specialtyFilter').value)">
+    <select id="specialtyFilter" onchange="searchEngine(document.getElementById('search').value, this.value)">
       <option value="">All Specialties</option>
     </select>
-    
-    <button id="reloadBtn" onclick="searchEngine(document.getElementById('search').value, document.getElementById('specialtyFilter').value)" title="Reload" aria-label="Reload" type="button" style="width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-left:6px;border:1px solid #ccc;background:#fff;cursor:pointer;padding:0;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2-8.83"/></svg>
+    <button id="reloadBtn" onclick="searchEngine(document.getElementById('search').value, document.getElementById('specialtyFilter').value)" title="Reload" aria-label="Reload" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
     </button>
-    
     <hr>
     
     
+    <ul id="usr">Users</ul>
     <script src="main.js"></script>
     
+
   </body>
 </html>
