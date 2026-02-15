@@ -333,18 +333,17 @@ function getInputValues() {
 }
 function validateInput(user = {}) {
   let isValid = true
-  if(!user.name || !user.age || !user.email || !user.specialty) {
+  
+  let isEmpty = input => input === undefined || input === null || (typeof(input) === 'string' && input.trim().length === 0)
+  let ageNum = Number(user.age)
+
+  if(isEmpty(user.name) || isEmpty(user.age) || isEmpty(user.grade) ) {
     alert("Enter all inputs")
     isValid = false
     return
   }
-  else if(user.age < 18) {
-    alert("Age must be 18 and above")
-    isValid = false
-    return
-  }
-  else if(!isValidEmail(user.email)) {
-    alert("Please enter a valid email address")
+  else if(!Number.isFinite(ageNum) || ageNum < 18) {
+    alert("Age must be 18 or above")
     isValid = false
     return
   }
